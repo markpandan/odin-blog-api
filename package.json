@@ -1,0 +1,24 @@
+{
+  "name": "odin-blog-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node --watch app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markpandan/odin-blog-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markpandan/odin-blog-api/issues"
+  },
+  "homepage": "https://github.com/markpandan/odin-blog-api#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
