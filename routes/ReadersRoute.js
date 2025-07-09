@@ -3,6 +3,10 @@ const router = express.Router();
 
 const controller = require("../controllers/ReadersController");
 
+router.post("/login", controller.loginReader);
+
+router.post("/signup", controller.signupReader);
+
 router.get("/:readerId", controller.getReader);
 
 router.put("/:readerId", controller.putReader);

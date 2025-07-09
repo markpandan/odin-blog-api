@@ -1,9 +1,14 @@
-// exports.getAuthors = (req, res) => {
-//   res.json({
-//     message:
-//       "This is the GET response of getting all authors of the author route",
-//   });
-// };
+exports.loginAuthor = (req, res) => {
+  res.json({ message: "This is the response for logging in the author" });
+};
+
+exports.signupAuthor = (req, res) => {
+  res.json({ message: "This is the response for signing up the author" });
+};
+
+exports.getAuthors = (req, res) => {
+  res.json({ message: "This is the GET response of getting all authors" });
+};
 
 exports.getAuthor = (req, res) => {
   res.json({ message: "This is the GET response of the author route" });

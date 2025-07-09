@@ -1,3 +1,11 @@
+exports.loginReader = (req, res) => {
+  res.json({ message: "This is the response for logging in the reader" });
+};
+
+exports.signupReader = (req, res) => {
+  res.json({ message: "This is the response for signing up the reader" });
+};
+
 exports.getReader = (req, res) => {
   res.json({ message: "This is the GET response of the readers route" });
 };

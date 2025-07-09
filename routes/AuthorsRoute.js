@@ -3,11 +3,15 @@ const router = express.Router();
 
 const controller = require("../controllers/AuthorsController");
 
-// router.get("/", controller.getAuthors);
-
-router.get("/:authorId", controller.getAuthor);
+router.get("/", controller.getAuthors);
 
 router.post("/", controller.postAuthor);
+
+router.post("/login", controller.loginAuthor);
+
+router.post("/signup", controller.signupAuthor);
+
+router.get("/:authorId", controller.getAuthor);
 
 router.put("/:authorId", controller.putAuthor);
 
