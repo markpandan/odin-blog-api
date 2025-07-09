@@ -1,9 +1,34 @@
-exports.loginAuthor = (req, res) => {
-  res.json({ message: "This is the response for logging in the author" });
+const verifyLogin = require("../lib/verifyLogin");
+const issueToken = require("../lib/jwtUtils");
+const db = require("../prisma/queries");
+
+exports.loginAuthor = async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const verify = await verifyLogin("authors", username, password);
+
+  if (verify.success) {
+    const token = issueToken("author", verify.user);
+    res.json({ token });
+  } else {
+    res.status(401).json({ message: verify.msg });
+  }
 };
 
-exports.signupAuthor = (req, res) => {
-  res.json({ message: "This is the response for signing up the author" });
+exports.signupAuthor = async (req, res) => {
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  console.log(username, email, password);
+
+  try {
+    await db.createNewAuthor(username, email, password);
+
+    res.json({ message: "Author account created" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.getAuthors = (req, res) => {

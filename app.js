@@ -1,6 +1,9 @@
 const express = require("express");
+require("dotenv").config();
 
 const app = express();
+
+require("./config/passport");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
