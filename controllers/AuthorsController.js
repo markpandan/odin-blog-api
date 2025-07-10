@@ -1,10 +1,12 @@
 const verifyLogin = require("../lib/verifyLogin");
 const issueToken = require("../lib/jwtUtils");
+const { isAuth } = require("../lib/authUtils");
 const db = require("../prisma/queries");
 
+const passport = require("passport");
+
 exports.loginAuthor = async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password } = req.body;
   const verify = await verifyLogin("authors", username, password);
 
   if (verify.success) {
@@ -16,18 +18,13 @@ exports.loginAuthor = async (req, res) => {
 };
 
 exports.signupAuthor = async (req, res) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
-
-  console.log(username, email, password);
+  const { username, email, password } = req.body;
 
   try {
     await db.createNewAuthor(username, email, password);
-
     res.json({ message: "Author account created" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch ({ message }) {
+    res.status(500).json({ message });
   }
 };
 
@@ -47,17 +44,41 @@ exports.putAuthor = (req, res) => {
   res.json({ message: "This is the PUT response of the author route" });
 };
 
-exports.getPostsByAuthor = (req, res) => {
-  res.json({
-    message: "This is the GET response from a post of the author route",
-  });
-};
+exports.getPostsByAuthor = [
+  isAuth,
+  async (req, res) => {
+    if (!(req.params.authorName == req.user.username)) {
+      res.status(401).json({ message: "Unauthorized Access" });
+      return;
+    }
 
-exports.postPostByAuthor = (req, res) => {
-  res.json({
-    message: "This is the POST response from a post of the author route",
-  });
-};
+    const posts = await db.getPostsById(req.user.id);
+
+    res.json({ posts });
+  },
+];
+
+exports.postPostByAuthor = [
+  isAuth,
+  async (req, res) => {
+    if (!(req.params.authorName == req.user.username)) {
+      res.status(401).json({ message: "Unauthorized Access" });
+      return;
+    }
+
+    const { title, content, is_published } = req.body;
+
+    try {
+      await db.createNewPosts(req.user.id, title, content, is_published);
+      res.json({
+        message: "Post Saved",
+      });
+    } catch ({ message }) {
+      console.error(message);
+      res.status(500).json({ message });
+    }
+  },
+];
 
 exports.putPostByAuthor = (req, res) => {
   res.json({

@@ -1,9 +1,28 @@
-exports.loginReader = (req, res) => {
-  res.json({ message: "This is the response for logging in the reader" });
+const verifyLogin = require("../lib/verifyLogin");
+const issueToken = require("../lib/jwtUtils");
+const db = require("../prisma/queries");
+
+exports.loginReader = async (req, res) => {
+  const { username, password } = req.body;
+  const verify = await verifyLogin("authors", username, password);
+
+  if (verify.success) {
+    const token = issueToken("readers", verify.user);
+    res.json({ token });
+  } else {
+    res.status(401).json({ message: verify.msg });
+  }
 };
 
-exports.signupReader = (req, res) => {
-  res.json({ message: "This is the response for signing up the reader" });
+exports.signupReader = async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    await db.createNewReader(username, email, password);
+    res.json({ message: "Readers account created" });
+  } catch ({ message }) {
+    res.status(500).json({ message });
+  }
 };
 
 exports.getReader = (req, res) => {

@@ -15,9 +15,9 @@ router.get("/:authorId", controller.getAuthor);
 
 router.put("/:authorId", controller.putAuthor);
 
-router.get("/:authorId/posts", controller.getPostsByAuthor);
+router.get("/@:authorName/posts", controller.getPostsByAuthor);
 
-router.post("/:authorId/posts", controller.postPostByAuthor);
+router.post("/@:authorName/posts", controller.postPostByAuthor);
 
 router.put("/:authorId/posts/:postId", controller.putPostByAuthor);
 

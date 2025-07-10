@@ -3,7 +3,10 @@ const passport = require("passport");
 exports.getPosts = [
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ message: "This is the GET response of the post route" });
+    res.json({
+      user: req.user,
+      message: "This is the GET response of the post route",
+    });
   },
 ];
 
