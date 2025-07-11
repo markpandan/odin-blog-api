@@ -13,7 +13,7 @@ router.put("/:readerId", controller.putReader);
 
 router.get("/:readerId/comments", controller.getCommentsByReader);
 
-router.post("/:readerId/comments", controller.postCommentByReader);
+router.post("/@:readerName/comments", controller.postCommentByReader);
 
 router.put("/:readerId/comments/:commentId", controller.putCommentByReader);
 

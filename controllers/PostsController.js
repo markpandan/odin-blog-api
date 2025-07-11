@@ -1,15 +1,20 @@
 const passport = require("passport");
+const db = require("../prisma/queries");
 
-exports.getPosts = [
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    res.json({
-      user: req.user,
-      message: "This is the GET response of the post route",
-    });
-  },
-];
+exports.getPosts = async (req, res) => {
+  const posts = await db.getPosts();
 
-exports.getPostById = (req, res) => {};
+  res.json({ output: posts });
+};
 
-exports.getCommentsByPostId = (req, res) => {};
+exports.getPostById = async (req, res) => {
+  const post = await db.getPostsById(req.params.postId);
+
+  res.json({ output: post });
+};
+
+exports.getCommentsByPostId = async (req, res) => {
+  const comments = await db.getCommentsById(req.params.postId);
+
+  res.json({ output: comments });
+};

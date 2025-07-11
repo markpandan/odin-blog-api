@@ -2,6 +2,7 @@ const verifyLogin = require("../lib/verifyLogin");
 const issueToken = require("../lib/jwtUtils");
 const { isAuth } = require("../lib/authUtils");
 const db = require("../prisma/queries");
+const { AUTHOR_ACCOUNT_TYPE_STRING } = require("../lib/constants");
 
 const passport = require("passport");
 
@@ -10,10 +11,10 @@ exports.loginAuthor = async (req, res) => {
   const verify = await verifyLogin("authors", username, password);
 
   if (verify.success) {
-    const token = issueToken("author", verify.user);
-    res.json({ token });
+    const token = issueToken(AUTHOR_ACCOUNT_TYPE_STRING, verify.user);
+    res.json({ output: token });
   } else {
-    res.status(401).json({ message: verify.msg });
+    res.status(401).json({ message: verify.message });
   }
 };
 
@@ -54,7 +55,7 @@ exports.getPostsByAuthor = [
 
     const posts = await db.getPostsById(req.user.id);
 
-    res.json({ posts });
+    res.json({ output: posts });
   },
 ];
 

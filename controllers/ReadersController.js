@@ -1,16 +1,22 @@
 const verifyLogin = require("../lib/verifyLogin");
 const issueToken = require("../lib/jwtUtils");
 const db = require("../prisma/queries");
+const { isAuth, verifyAccount } = require("../lib/authUtils");
+const { READER_ACCOUNT_TYPE_STRING } = require("../lib/constants");
 
 exports.loginReader = async (req, res) => {
   const { username, password } = req.body;
-  const verify = await verifyLogin("authors", username, password);
+  const verify = await verifyLogin(
+    READER_ACCOUNT_TYPE_STRING,
+    username,
+    password
+  );
 
   if (verify.success) {
-    const token = issueToken("readers", verify.user);
-    res.json({ token });
+    const token = issueToken(READER_ACCOUNT_TYPE_STRING, verify.user);
+    res.json({ output: token });
   } else {
-    res.status(401).json({ message: verify.msg });
+    res.status(401).json({ message: verify.message });
   }
 };
 
@@ -39,17 +45,34 @@ exports.getCommentsByReader = (req, res) => {
   });
 };
 
-exports.postCommentByReader = (req, res) => {
-  res.json({
-    message: "This is the POST response of comments from the readers route",
-  });
-};
+exports.postCommentByReader = [
+  isAuth,
+  async (req, res) => {
+    const postId = req.query.postId;
+    const comment = req.body.comment;
 
-exports.postCommentByReader = (req, res) => {
-  res.json({
-    message: "This is the POST response of comments from the readers route",
-  });
-};
+    const verify = verifyAccount(
+      READER_ACCOUNT_TYPE_STRING,
+      req.user,
+      req.params.readerName
+    );
+
+    if (!verify.success) {
+      res.status(401).json({ message: verify.message });
+      return;
+    }
+
+    try {
+      await db.createNewComment(req.user.id, postId, comment);
+    } catch ({ message }) {
+      res.status(500).json({ message });
+    }
+
+    res.json({
+      message: "comment sent",
+    });
+  },
+];
 
 exports.putCommentByReader = (req, res) => {
   res.json({

@@ -43,10 +43,25 @@ exports.getReadersByUsername = async (username) => {
   });
 };
 
+exports.getPosts = async () => {
+  return await prisma.posts.findMany({});
+};
+
 exports.getPostsById = async (authorId) => {
   return await prisma.posts.findMany({
     where: {
       authorId,
+    },
+  });
+};
+
+exports.getCommentsById = async (postId) => {
+  return await prisma.comments.findMany({
+    where: {
+      postId,
+    },
+    include: {
+      readers: true,
     },
   });
 };
@@ -58,6 +73,16 @@ exports.createNewPosts = async (authorId, title, content, is_published) => {
       content,
       is_published,
       authorId,
+    },
+  });
+};
+
+exports.createNewComment = async (readerId, postId, comment) => {
+  return await prisma.comments.create({
+    data: {
+      content: comment,
+      readerId,
+      postId,
     },
   });
 };
