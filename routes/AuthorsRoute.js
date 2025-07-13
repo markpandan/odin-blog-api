@@ -17,11 +17,15 @@ router.get("/:authorId", controller.getAuthor);
 
 router.put("/:authorId", controller.putAuthor);
 
+router.get("/:authorName/posts/:postId", controller.getOnePostByAuthor);
+
+router.post("/:authorName/posts/new", controller.postPostByAuthor);
+
+router.put("/:authorName/posts/:postId", controller.putPostByAuthor);
+
 router.get("/@:authorName/posts", controller.getPostsByAuthor);
 
 router.post("/@:authorName/posts", controller.postPostByAuthor);
-
-router.put("/:authorId/posts/:postId", controller.putPostByAuthor);
 
 router.delete("/:authorId/posts/:postId", controller.deletePostByAuthor);
 

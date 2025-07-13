@@ -63,6 +63,20 @@ exports.putAuthor = (req, res) => {
   res.json({ message: "This is the PUT response of the author route" });
 };
 
+exports.getOnePostByAuthor = [
+  isAuth,
+  async (req, res) => {
+    if (!(req.params.authorName == req.user.username)) {
+      res.status(401).json({ message: "Unauthorized Access" });
+      return;
+    }
+
+    const post = await db.getPostsByPostId(req.params.postId);
+
+    res.json({ output: post[0] });
+  },
+];
+
 exports.getPostsByAuthor = [
   isAuth,
   async (req, res) => {
@@ -71,7 +85,7 @@ exports.getPostsByAuthor = [
       return;
     }
 
-    const posts = await db.getPostsById(req.user.id);
+    const posts = await db.getPostsByAuthorId(req.user.id);
 
     res.json({ output: posts });
   },
@@ -99,11 +113,30 @@ exports.postPostByAuthor = [
   },
 ];
 
-exports.putPostByAuthor = (req, res) => {
-  res.json({
-    message: "This is the PUT response from a post of the author route",
-  });
-};
+exports.putPostByAuthor = [
+  isAuth,
+  async (req, res) => {
+    const { authorName, postId } = req.params;
+    const { title, content, is_published } = req.body;
+
+    if (!(authorName == req.user.username)) {
+      res.status(401).json({ message: "Unauthorized Access" });
+      return;
+    }
+
+    try {
+      await db.updatePostById(authorName, postId, {
+        title,
+        content,
+        is_published,
+      });
+      res.json({ message: "Post Updated" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  },
+];
 
 exports.deletePostByAuthor = (req, res) => {
   res.json({

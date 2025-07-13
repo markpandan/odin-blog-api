@@ -94,3 +94,22 @@ exports.createNewComment = async (readerId, postId, comment) => {
     },
   });
 };
+
+exports.updatePostById = async (authorName, postId, data) => {
+  const { title, content, is_published } = data;
+  return await prisma.posts.update({
+    where: {
+      id: postId,
+      author: {
+        is: {
+          username: authorName,
+        },
+      },
+    },
+    data: {
+      title,
+      content,
+      is_published,
+    },
+  });
+};
