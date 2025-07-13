@@ -5,7 +5,7 @@ const controller = require("../controllers/PostsController");
 
 router.get("/", controller.getPosts);
 
-router.get("/:postId", controller.getPosts);
+router.get("/:postId", controller.getPostById);
 
 router.get("/:postId/comments", controller.getCommentsByPostId);
 

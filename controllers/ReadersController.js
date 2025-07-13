@@ -13,8 +13,8 @@ exports.loginReader = async (req, res) => {
   );
 
   if (verify.success) {
-    const token = issueToken(READER_ACCOUNT_TYPE_STRING, verify.user);
-    res.json({ output: token });
+    const token = issueToken(READER_ACCOUNT_TYPE_STRING, verify.output);
+    res.json({ output: { token } });
   } else {
     res.status(401).json({ message: verify.message });
   }
@@ -25,15 +25,26 @@ exports.signupReader = async (req, res) => {
 
   try {
     await db.createNewReader(username, email, password);
-    res.json({ message: "Readers account created" });
+    res.json({ message: "Reader account created" });
   } catch ({ message }) {
     res.status(500).json({ message });
   }
 };
 
-exports.getReader = (req, res) => {
-  res.json({ message: "This is the GET response of the readers route" });
-};
+exports.tokenReader = [
+  isAuth,
+  async (req, res) => {
+    const user = await db.getReadersByUsername(req.user.username);
+    res.json({ output: user });
+  },
+];
+
+exports.getReader = [
+  isAuth,
+  (req, res) => {
+    res.json({ output: req.user });
+  },
+];
 
 exports.putReader = (req, res) => {
   res.json({ message: "This is the PUT response of the readers route" });
@@ -48,13 +59,13 @@ exports.getCommentsByReader = (req, res) => {
 exports.postCommentByReader = [
   isAuth,
   async (req, res) => {
-    const postId = req.query.postId;
+    const { readerName, postId } = req.params;
     const comment = req.body.comment;
 
     const verify = verifyAccount(
       READER_ACCOUNT_TYPE_STRING,
       req.user,
-      req.params.readerName
+      readerName
     );
 
     if (!verify.success) {
@@ -69,7 +80,7 @@ exports.postCommentByReader = [
     }
 
     res.json({
-      message: "comment sent",
+      message: "Comment Sent",
     });
   },
 ];

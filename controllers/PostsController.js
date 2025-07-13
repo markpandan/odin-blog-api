@@ -8,9 +8,9 @@ exports.getPosts = async (req, res) => {
 };
 
 exports.getPostById = async (req, res) => {
-  const post = await db.getPostsById(req.params.postId);
+  const post = await db.getPostsByPostId(req.params.postId);
 
-  res.json({ output: post });
+  res.json({ output: post[0] });
 };
 
 exports.getCommentsByPostId = async (req, res) => {

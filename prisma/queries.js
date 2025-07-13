@@ -47,7 +47,15 @@ exports.getPosts = async () => {
   return await prisma.posts.findMany({});
 };
 
-exports.getPostsById = async (authorId) => {
+exports.getPostsByPostId = async (postId) => {
+  return await prisma.posts.findMany({
+    where: {
+      id: postId,
+    },
+  });
+};
+
+exports.getPostsByAuthorId = async (authorId) => {
   return await prisma.posts.findMany({
     where: {
       authorId,
@@ -61,7 +69,7 @@ exports.getCommentsById = async (postId) => {
       postId,
     },
     include: {
-      readers: true,
+      reader: true,
     },
   });
 };
