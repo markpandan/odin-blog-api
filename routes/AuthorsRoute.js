@@ -11,6 +11,8 @@ router.post("/login", controller.loginAuthor);
 
 router.post("/signup", controller.signupAuthor);
 
+router.get("/token", controller.tokenAuthor);
+
 router.get("/:authorId", controller.getAuthor);
 
 router.put("/:authorId", controller.putAuthor);
