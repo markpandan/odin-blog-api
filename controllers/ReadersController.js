@@ -26,8 +26,16 @@ exports.signupReader = async (req, res) => {
   try {
     await db.createNewReader(username, email, password);
     res.json({ message: "Reader account created" });
-  } catch ({ message }) {
-    res.status(500).json({ message });
+  } catch (error) {
+    console.error(error);
+    if (
+      error.name == "PrismaClientKnownRequestError" &&
+      error.code == "P2002"
+    ) {
+      res.status(401).json({ message: "Username or email already exists" });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 };
 

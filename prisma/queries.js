@@ -44,7 +44,11 @@ exports.getReadersByUsername = async (username) => {
 };
 
 exports.getPosts = async () => {
-  return await prisma.posts.findMany({});
+  return await prisma.posts.findMany({
+    where: {
+      is_published: true,
+    },
+  });
 };
 
 exports.getPostsByPostId = async (postId) => {
